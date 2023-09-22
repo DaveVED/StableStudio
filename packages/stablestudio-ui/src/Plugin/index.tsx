@@ -1,5 +1,6 @@
 import * as StableStudio from "@stability/stablestudio-plugin";
 import * as StableStudioPluginExample from "@stability/stablestudio-plugin-example";
+import * as StableStudioPluginSageMaker from "@aws/stablestudio-plugin-sagemaker";
 import * as StableStudioPluginStability from "@stability/stablestudio-plugin-stability";
 import * as StableStudioPluginWebUI from "@stability/stablestudio-plugin-webui";
 
@@ -118,6 +119,8 @@ namespace State {
         ? StableStudioPluginExample
         : Environment.get("USE_WEBUI_PLUGIN") === "true"
         ? StableStudioPluginWebUI
+        : Environment.get("USE_SAGEMAKER_PLUGIN") === "true"
+        ? StableStudioPluginSageMaker
         : StableStudioPluginStability;
 
     return {
