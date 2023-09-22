@@ -5,6 +5,13 @@ This plugin allows to integrate StableStudio with Amazon SageMaker, by running S
 ## How it works
 As of the time of writing, you can easily deploy Stable Diffusion XL models (0.8 and 1.0) to Amazon SageMaker, using Amazon SageMaker JumpStart. Once the model(s) are deployed and you have Amazon SageMaker Hosting endpoints up and running, you can use this plugin to execute inference with the SageMaker endpoints.
 
+### Considerations for the beta
+1. Authentication is not supported in the beta. AWS credentials are obtained by using Amazon Cognito Identity Pools with Guest access. By knowing the identity pool identifier, a malicious user could potentially invoke the SageMaker endpoint(s) or access the generated images. Consider implementing integration with Amazon Cognito User Pools to federate with your identity provider and revoke guest access.
+2. StableStudio is a client-side React application running in the browser; as a consequence, internet access is required to connect to the following AWS endpoints:
+   - SageMaker Runtime
+   - DynamoDB
+   - Amazon S3
+
 ## Getting Started
 
 ### Create the required AWS Resources
@@ -108,6 +115,30 @@ Following are the steps required to create the AWS Resources the StableStudio Sa
 
       **WARNING: make sure not to store any confidential data in the bucket or in the DynamoDB table, given Cognito is configure with Guest (anonymous) acces by default. Implement appropriate authentication via IdPs if you want to keep your data private.**
 
+### Starting StableStudio with the SageMaker Plugin enabled
+
+Run the following command:
+
+```
+yarn dev:use-sagemaker-plugin
+```
+
 ### Configuring StableStudio SageMaker Plugin
-Work in progress.
+
+The first time you will launch StableStudio with the SageMaker Plugin, you will be prompted for the following settings:
+
+1. **Model configuration** - This value has to be set to a JSON array that lists the available models in SageMaker. Example:
+    ```
+    [{"modelId": "sdxl_10", "modelName": "Stable Diffusion XL 1.0", "endpointName": "sdxl-1-0-jumpstart-XXXXXX"}, {"modelId": "sdxl_08", "modelName": "Stable Diffusion XL 0.8", "endpointName": "sdxl-0-8-jumpstart-XXXXXX"}]
+    ```
+2. **AWS region** - The AWS region to use
+3. **Amazon Cognito Identity Pool ID** - The identifier of the Amazon Cognito Identity Pool
+4. **Store generated images** - Whether to enable persistence and store the generated images in S3 and the related metadata in DynamoDB
+5. **Generations table name** - Name of the DynamoDB table that stores generations
+6. **Generations bucket name** - Name of the S3 bucket that stores generations
+7. **Project ID** - The identifier of the project that groups all the generations. If not set, the Amazon Cognito Identity Pool IdentityID will be used. The IdentityID is persisted in the browser, hence the history of generations would not be available cross-browser unless a specific ProjectID is set explicitly.
+
+
+
+
 
