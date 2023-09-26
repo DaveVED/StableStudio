@@ -24,6 +24,32 @@ Following are the steps required to create the AWS Resources the StableStudio Sa
    2. On the top-right, click on **Create Bucket**
    3. Type ***stablestudio-generations*** as **Bucket name** and select the appropriate **AWS Region**
    4. Keep the remaining configuration as default, and then click on **Create Bucket**
+   5. After the bucket is created, open the bucket **Permissions** tab and **Edit** Cross-origin resource sharing (CORS) as follows:
+      ```
+      [
+          {
+              "AllowedHeaders": [
+                  "*"
+              ],
+              "AllowedMethods": [
+                  "HEAD",
+                  "GET",
+                  "PUT",
+                  "POST",
+                  "DELETE"
+              ],
+              "AllowedOrigins": [
+                  "http://localhost:3000"
+              ],
+              "ExposeHeaders": [
+                  "ETag",
+                  "x-amz-meta-custom-header"
+              ]
+          }
+      ]
+      ```
+      Make sure to replace http://localhost:3000 with the hostname and port where you are running StableStudio.
+      
 3. Create an Amazon DynamoDB table that will be used as the database for the generated images
    1. From the AWS Console, open Amazon DynamoDB
    2. On the top-right, click on **Create Table**
