@@ -272,13 +272,14 @@ export const createPlugin = StableStudio.createPlugin<{
 
     getStableDiffusionDefaultInput: () => {
       var modelsJsonString = get().settings.modelsJson.value
-      if (!modelsJsonString) {
-          throw new Error("Model configuration JSON is required.");
+      let modelToSet = undefined;
+      if (modelsJsonString) {
+        const modelsJson:Api.ModelsConfig[] = JSON.parse(modelsJsonString);
+        modelToSet = modelsJson[0].modelId;
       }
-      var modelsJson:Api.ModelsConfig[] = JSON.parse(modelsJsonString);
 
       var defaultInput:StableStudio.StableDiffusionInput = {
-        model: modelsJson[0].modelId,
+        model: modelToSet,
         sampler: { id: "0", name: "DDIM" },
         style: "enhance",
         width: 1024,
@@ -288,6 +289,7 @@ export const createPlugin = StableStudio.createPlugin<{
       };
 
       return defaultInput;
+
     },
 
     getStableDiffusionExistingImages: async (options) => {
@@ -588,19 +590,21 @@ export const createPlugin = StableStudio.createPlugin<{
 
     getStableDiffusionModels: () => {
       var modelsJsonString = get().settings.modelsJson.value
-      if (!modelsJsonString) {
-          throw new Error("Model configuration JSON is required.");
-      }
-      var modelsJson:Api.ModelsConfig[] = JSON.parse(modelsJsonString);
+      
+      let sdModels:StableStudio.StableDiffusionModel[] = [];
 
-      const sdModels = modelsJson.map(m => {
-        var sdModel:StableStudio.StableDiffusionModel = {
-          "id" : m.modelId,
-          "name" : m.modelName,
-          "description" : m.modelName
-        };
-        return sdModel;
-      });
+      if (modelsJsonString){
+        var modelsJson:Api.ModelsConfig[] = JSON.parse(modelsJsonString);
+
+        sdModels = modelsJson.map(m => {
+          var sdModel:StableStudio.StableDiffusionModel = {
+            "id" : m.modelId,
+            "name" : m.modelName,
+            "description" : m.modelName
+          };
+          return sdModel;
+        });
+      }
 
       return sdModels;
     },
