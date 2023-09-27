@@ -30,6 +30,7 @@ import {
 import * as Api from "./api";
 import { CognitoIdentityClient, GetIdCommand, GetIdCommandInput, GetOpenIdTokenCommandInput } from "@aws-sdk/client-cognito-identity";
 import { CognitoIdentityCredentialProvider, CognitoIdentityCredentials, fromCognitoIdentityPool } from "@aws-sdk/credential-provider-cognito-identity";
+import { v4 as uuidv4 } from 'uuid';
 
 const getStableDiffusionDefaultCount = () => 1;
 const getStableDiffusionDefaultInputFromPrompt = (prompt: string) => ({
@@ -149,7 +150,7 @@ export const createPlugin = StableStudio.createPlugin<{
           }
         ) ?? [];
 
-        let generation_id = crypto.randomUUID();
+        let generation_id = uuidv4();
         let returnImages:StableStudio.StableDiffusionImages = {
           id: generation_id,
           images: []
@@ -176,7 +177,7 @@ export const createPlugin = StableStudio.createPlugin<{
             Body: JSON.stringify(generationRequest),
             ContentType: "application/json",
             Accept: "application/json;png",
-            InferenceId: crypto.randomUUID()
+            InferenceId: uuidv4()
           };
 
           const smInvokeEndpointCommand = new InvokeEndpointCommand(smInvokeEndpointInput);
@@ -194,7 +195,7 @@ export const createPlugin = StableStudio.createPlugin<{
           let generatedImages:StableStudio.StableDiffusionImage[] = [];
           generatedImages = generationResponse.artifacts.map(
             (artifact, index) => {
-              const image_id = crypto.randomUUID();
+              const image_id = uuidv4();
               return {
                 id: image_id,
                 blob: imageBlobs[index],
@@ -329,7 +330,7 @@ export const createPlugin = StableStudio.createPlugin<{
 
         const currentProjectId = get().settings.projectId.value;
         if (!currentProjectId || currentProjectId === ""){
-          localStorage.setItem("stablestudio-sagemaker-project-id", identityId || crypto.randomUUID());
+          localStorage.setItem("stablestudio-sagemaker-project-id", identityId || uuidv4());
         }
 
         const projectID = get().settings.projectId.value;

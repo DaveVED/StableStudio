@@ -21,9 +21,11 @@
         "@aws-sdk/client-sagemaker-runtime": "^3.410.0",
         "@aws-sdk/credential-provider-cognito-identity": "3.410.0",
         "@stability/stablestudio-plugin": "workspace:^",
-        "@stability/stablestudio-plugin-stability": "workspace:^"
+        "@stability/stablestudio-plugin-stability": "workspace:^",
+        "uuid": "^9.0.1"
     },
     "devDependencies": {
+        "@types/uuid": "^9.0.4",
         "@typescript-eslint/eslint-plugin": "^5.33.1",
         "@typescript-eslint/parser": "^5.33.1",
         "eslint": "8.22.0",
